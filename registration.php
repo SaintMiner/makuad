@@ -1,10 +1,11 @@
 <?php 
-
+    include("./classes/user.php");
+    include("./classes/db_connection.php");
     // if(isset($_POST['submit'])) {
     //     echo htmlspecialchars($_POST['email']);
     //     echo htmlspecialchars($_POST['username']);
     // }
-    $errors = array("email"=>"", "username"=>"", "password"=>"", "c_password"=>"");
+    $errors = array("email"=>"", "username"=>"", "password"=>"", "c_password"=>"", "t_email"=>"", "t_username"=>"");
     
     if(isset($_POST['submit'])) {
         $email = $_POST['email'];
@@ -20,7 +21,7 @@
         if(empty($username)) {
             $errors["username"] = 'Please, fill the username <br/>';
         } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/', $username)) {
-            $errors["username"] = "Username bukvi (malenkie bolsie), cifri i probeli toko!";
+            $errors["username"] = "Username can contain only uppercase and lowercase chars, number and spaces. Nedds to be 8 symbols minimum and 30 max";
         } else {
             $errors["username"] = "";
         }
@@ -28,8 +29,8 @@
         $password = $_POST['password'];
         if(empty($password)) {
             $errors["password"] = "Please, fill the password <br/>";
-        } elseif (!preg_match('/^\S*(?=\S{8,})(?=\S*[a-z])(?=\S*[A-Z])(?=\S*[\d])\S*$/', $password)) {
-            $errors["password"] = "Password must contain: <br/> 8 Symbols <br/> 1 Uppercase char <br/> 1 Lowercase char <br/> 1 number";
+        } elseif (!preg_match('/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,50}$/', $password)) {
+            $errors["password"] = "Password must contain: <br/> 8 Symbols | Max: 50 symbols<br/> 1 Uppercase char <br/> 1 Lowercase char <br/> 1 number. ";
         } else {
             $errors["password"] = "";
         }
@@ -40,15 +41,39 @@
         } elseif ($c_password != $password) {
             $errors["c_password"] = "Passwords do not match <br/>";
         } else {
-            $errors = "";
+            $errors["c_password"] = "";
         }
-
-
+        $db_user = new User($username, $email, NULL);
+        if (!empty($username) || !empty($email)) {
+            
+            // $errors["taken"] = $db_user->checkExistUser();
+            $taken = $db_user->checkExistUser();
+            if (!$taken["t_email"]) {
+                $errors["t_email"] = "Email is already taken";
+            } else {
+                $errors["t_email"] = "";
+            }
+            if (!$taken["t_username"]) {
+                $errors["t_username"] = "Username is already taken";
+            } else {
+                $errors["t_username"] = "";
+            }
+        }
+        
         if(array_filter($errors)) { //check for errors
             echo "errors in form!";
         } else {
+            $db_user->registerUser($password);
+            // $db_con = new DB_connection();    
+            // $query_res = $db_con->makeQuery("SELECT ID FROM users WHERE username LIKE \"first_user\"");
+            // unset($db_con);
             
-            header("Location: ./index.php");
+            // if ($checkableUser->checkExistUser($checkableUser)) {
+
+            // } 
+            // header("Location: ./index.php");
+            // header("Location: ./registration.php");
+
         }
     }
 
@@ -117,8 +142,10 @@
                     <!-- <i class="fas fa-exclamation-triangle"></i> -->
                 </span>
             </div>
-            <span class="help is-danger"><?php echo $errors["c_password"]?></span>
-
+            <span class="help is-danger"><?php print $errors["c_password"]?></span>
+            
+            <span class="help is-danger"><?php print $errors["t_email"]?></span>
+            <span class="help is-danger"><?php print $errors["t_username"]?></span>
             <div class="is-centered buttons">
                 <input class="button " type="submit" name="submit" value="Register">
             </div>

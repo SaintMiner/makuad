@@ -1,7 +1,4 @@
 <?php
-
-    $db_con = new DB_connection();
-
 ?>
 <header>
     <nav class="navbar" role="navigation" aria-label="main navigation">

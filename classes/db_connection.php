@@ -20,13 +20,14 @@
             return $fetchedResult;
         }
 
-        // public function selectUsers() {
-        //     $sql = "SELECT ID, username, email FROM users";
-        //     $result = $this->con->query($sql);
-        //     $rs = $result->fetch_all(MYSQLI_ASSOC);
-        //     $result->free();
-        //     return $rs;
-        // }
+        public function makeInsertQuery($sql) {
+            $result = $this->con->query($sql);
+            if($result) {
+                echo "Inserted very GOOD!";
+            } else {
+                echo "query error (" .   $this->con->errno . "):" . $this->con->error;
+            }
+        }
 
     }
 ?>

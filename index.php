@@ -20,14 +20,9 @@
     //     print_r($users);
 
     include("./classes/db_connection.php");
-    include("./classes/user.php");
     include("./classes/advertisement.php");
     $db_con = new DB_connection();
-    $query_users_result = $db_con->makeQuery("SELECT ID, username, email FROM users;");
-    $users = array(); //make array for user objects
-    foreach ($query_users_result as $user) { //pushing object to array
-        array_push($users, new User($user["username"], $user["email"], $user["ID"]) );
-    }
+    
 
     $query_ad_result = $db_con->makeQuery("SELECT ID, title, user, createdAt FROM advertisements;");
     $ads = array();
@@ -48,32 +43,7 @@
             Hi! Nothing to load, but all is working right (Maybe)!
         </span>
         <br>
-        <div class="box">
-            <div class="columns is-multiline">
-                
-            <!-- <?php for($i = 0; $i < count($users); $i++): ?> 
-                <div class="container column is-one-third">
-                    <h6 class="has-text-centered card label">USER: <?php echo htmlspecialchars($users[$i]->getUsername())?></h6>
-                    <div class="card">
-                        <p><span class="has-text-weight-medium"> ID: </span> <span class="is-pulled-right"> <?php echo $users[$i]->getID() ?> </span></p>
-                        <p><span class="has-text-weight-medium"> USERNAME: </span> <span class="is-pulled-right"> <?php $users[$i]->getUsername()?> </span></p>
-                        <p><span class="has-text-weight-medium"> E-MAIL: </span> <span class="is-pulled-right"> <?php $users[$i]->getEmail()?> </span></p>
-                    </div>
-                </div>
-            <?php endfor; ?>  -->
-            <?php foreach($users as $user): ?> 
-                <div class="container column is-one-third">
-                    <h6 class="has-text-centered card label">USER: <?php echo htmlspecialchars($user->getUsername())?></h6>
-                    <div class="card">
-                        <p><span class="has-text-weight-medium"> ID: </span> <span class="is-pulled-right"> <?php $user->getID() ?> </span></p>
-                        <p><span class="has-text-weight-medium"> USERNAME: </span> <span class="is-pulled-right"> <?php $user->getUsername()?> </span></p>
-                        <p><span class="has-text-weight-medium"> E-MAIL: </span> <span class="is-pulled-right"> <?php $user->getEmail()?> </span></p>
-                    </div>
-                </div>
-            <?php endforeach; ?> 
-
-            </div>
-        </div>
+        
 
         <div class="box">
             <div class="columns is-multiline">
