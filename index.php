@@ -21,6 +21,8 @@
 
     include("./classes/db_connection.php");
     include("./classes/advertisement.php");
+    include("./classes/user.php");
+    
     $db_con = new DB_connection();
     
 
@@ -35,9 +37,15 @@
 <html lang="en">
 <?php 
     include('components/style_comp/head.php');
-    include('components/style_comp/header.php');
+    
 ?>
 <body>
+
+    <?php 
+        include('components/style_comp/header.php');
+    ?>
+    
+
     <div>
         <span>
             Hi! Nothing to load, but all is working right (Maybe)!

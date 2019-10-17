@@ -15,6 +15,11 @@
 
         public function makeQuery($sql) { //make query function | return query result
             $result = $this->con->query($sql);
+            if($result) {
+                // echo "Selected very GOOD!";
+            } else {
+                echo "query error (" .   $this->con->errno . "):" . $this->con->error;
+            }
             $fetchedResult = $result->fetch_all(MYSQLI_ASSOC);
             $result->free();
             return $fetchedResult;
@@ -23,7 +28,7 @@
         public function makeInsertQuery($sql) {
             $result = $this->con->query($sql);
             if($result) {
-                echo "Inserted very GOOD!";
+                // echo "Inserted very GOOD!";
             } else {
                 echo "query error (" .   $this->con->errno . "):" . $this->con->error;
             }

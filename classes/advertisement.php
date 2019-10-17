@@ -4,13 +4,13 @@
         private $id;
         private $title;
         private $user;
-        private $createAt;
+        private $createdAt;
 
-        public function __construct($id, $title, $user, $createAt) {
+        public function __construct($id, $title, $user, $createdAt) {
             $this->id = $id;
             $this->title = $title;
             $this->user = $user;
-            $this->createAt = $createAt;
+            $this->createdAt = $createdAt;
         }
 
         public function getId() {
@@ -32,7 +32,7 @@
         }
 
         public function getCreatedAt() {
-            echo $this->createAt;
+            echo $this->createdAt;
         }
 
         public function getShortInfo() {
@@ -43,6 +43,21 @@
             unset($db_con);
 
             echo $shortInfo[0]["shortInfo"];
+        }
+
+        public function addAdvertisement($sInfo, $fInfo) {
+            $db_con = new DB_connection();
+            $sql = "INSERT INTO advertisements (title, user, createdAt) VALUES ('$this->title','$this->user','$this->createdAt')";
+            $db_con->makeInsertQuery($sql);
+
+            $sql = "SELECT ID FROM advertisements WHERE '$this->title' = title AND '$this->user' = user AND '$this->createdAt' = createdAt";
+            $this->id = $db_con->makeQuery($sql)[0]["ID"];
+
+            $sql = "INSERT INTO adinfo (shortInfo, fullInfo, advertisement) VALUES ('$sInfo','$fInfo','$this->id')";
+            $db_con->makeInsertQuery($sql);
+
+            $db_con = null;
+            unset($db_con);
         }
     }
 ?>

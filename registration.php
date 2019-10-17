@@ -1,6 +1,10 @@
 <?php 
     include("./classes/user.php");
     include("./classes/db_connection.php");
+    session_start();
+    if ($_SESSION["logged"]) {
+        header("Location: index.php");
+    }
     // if(isset($_POST['submit'])) {
     //     echo htmlspecialchars($_POST['email']);
     //     echo htmlspecialchars($_POST['username']);
@@ -82,17 +86,18 @@
 ?>
 <!DOCTYPE html>
 <html>
+<?php 
+    include('./components/style_comp/head.php');
+ ?>
 <body>
 <?php
     include('./components/style_comp/header.php');
-    include('./components/style_comp/head.php');
  ?>
 <div class="columns is-mobile is-multiline is-centered">
-    <div class="column is-half">
-        <?php echo $result?>
-        <form class="field" action="registration.php" method="POST">
+    <div class="column is-half box">
+            <form class="field" action="registration.php" method="POST">
 
-            <h4>USER REGISTRATION</h4>
+            <h4 class="has-text-centered">USER REGISTRATION</h4>
             
             <label class="label">Username</label>
             <div class="control has-icons-left has-icons-right">
@@ -146,6 +151,7 @@
             
             <span class="help is-danger"><?php print $errors["t_email"]?></span>
             <span class="help is-danger"><?php print $errors["t_username"]?></span>
+            <br>
             <div class="is-centered buttons">
                 <input class="button " type="submit" name="submit" value="Register">
             </div>

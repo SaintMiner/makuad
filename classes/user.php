@@ -14,7 +14,7 @@
         
         
         public function getID() {
-            echo $this->id;
+            return $this->id;
         }
 
         public function getUsername() {
@@ -48,11 +48,26 @@
 
         public function registerUser($password) {
             $db_con = new DB_connection();
-            $sql = "INSERT INTO users (username, password, email) VALUES ('$this->username', '$password', '$this->email')asd";
+            $sql = "INSERT INTO users (username, password, email) VALUES ('$this->username', '$password', '$this->email')";
             $db_con->makeInsertQuery($sql);
 
             $db_con = null;
             unset($db_con);
+        }
+
+        public static function login($email, $password) {
+            $db_con = new DB_connection();
+            $sql = "SELECT id, username, email FROM users WHERE '$password' = password AND '$email' = email";
+            $query_rs = $db_con->makeQuery($sql);
+            $db_con = null;
+            unset($db_con);
+            if ($query_rs == NULL) {
+                return NULL;
+            } else {
+                return new User($query_rs[0]["username"], $query_rs[0]["email"], $query_rs[0]["id"]);
+            }
+            // print_r($query_rs);
+            // return $query_rs;
         }
         
     }
