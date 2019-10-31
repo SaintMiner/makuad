@@ -75,7 +75,7 @@
             // if ($checkableUser->checkExistUser($checkableUser)) {
 
             // } 
-            // header("Location: ./index.php");
+            header("Location: ./index.php");
             // header("Location: ./registration.php");
 
         }

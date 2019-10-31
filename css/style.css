@@ -1,4 +1,4 @@
-#ad-body {
+.adv-body {
     height: 100px; 
     overflow: hidden;
 }
@@ -10,4 +10,12 @@
 .custom-button {
     margin-right: 10px;
     padding: 5px 10px !important;
+}
+
+.adv-foot-username{
+    width: 200px;
+}
+
+.adv-foot {
+    height: 71px;
 }

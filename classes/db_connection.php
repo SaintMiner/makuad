@@ -29,6 +29,7 @@
             $result = $this->con->query($sql);
             if($result) {
                 // echo "Inserted very GOOD!";
+                return $this->con->insert_id;
             } else {
                 echo "query error (" .   $this->con->errno . "):" . $this->con->error;
             }
