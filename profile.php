@@ -2,22 +2,33 @@
     include("./classes/db_connection.php");
     include("./classes/advertisement.php");
     include("./classes/user.php");
-    
+    include("./classes/comment.php");    
     session_start();
 
-    if($_GET["delete"]) {
-        $ID = $_GET["delete"];
-        $db = new DB_connection();
-        $sql = "SELECT * FROM advertisements WHERE ID = '$ID'";
-        $res = $db->makeQuery($sql);
-        if ($res["user"] = $_SESSION["logged"]) {
-            $sql = "DELETE FROM advertisements WHERE ID = '$ID'";
-            $db->makeDeleteQuery($sql);
-        }
-        $db = null;
-        unset($db);
-        header("Location: profile.php");
+    if (!$_SESSION["logged"]) {
+        header("Location: login.php");
+    } else {
+        $profile = $_SESSION["logged"];
+        $userAds = $profile->getUserAdvertisements();
+        // print_r($userAds);
     }
+    // print_r($userAds[0]);
+    // echo $_GET["delete"];
+    if(isset($_GET["delete"])) {
+        $ID = $_GET["delete"];
+        $deleteAd = $userAds[$ID];
+        if ($deleteAd->getUserID() == $profile->getID()) {
+            $deleteAd->deleteAdvetisement();
+            // echo "delete: ".$ID;
+            header("Location: profile.php");
+        }
+    } elseif (isset($_GET["edit"])) {
+        $ID = $_GET["edit"];
+        $editAd = $userAds[$ID];
+        header("Location: createAd.php?edit=".$editAd->getID());
+    }
+
+    
 
 ?>
 
@@ -30,13 +41,6 @@
 <body>
     <?php 
         include('components/style_comp/header.php');
-        if (!$_SESSION["logged"]) {
-            header("Location: login.php");
-        } else {
-            $profile = $_SESSION["logged"];
-            $userAds = $profile->getUserAdvertisements();
-            // print_r($userAds);
-        }
     ?>
     <div class="columns box">
         <div class="column ">
@@ -55,7 +59,7 @@
             <div class="notification has-text-centered is-primary title column is-full">
                 Your Advertisements
             </div>
-            <?php foreach($userAds as $ad):?>
+            <?php foreach($userAds as $key => $ad):?>
                 <div class="card container column is-four-fifths box">
                     <div class="subtitle"><?php  $ad->getTitle(); ?></div>
                     
@@ -68,10 +72,10 @@
                         <div class="level-left">
                             <div class="buttons container makuad-small-pad">
 
-                            <a class="button has-text-info box" href="">
+                            <a class="button has-text-info box" href="<?="?edit=".$key ;?>">
                                 <i class="fas fa-pen"></i>
                             </a>
-                            <a class="button has-text-info box" href="<?="?delete=".$ad->getID() ;?>">
+                            <a class="button has-text-info box" href="<?="?delete=".$key ;?>">
                                 <i class="fas fa-trash"></i>
                             </a>
                             </div>

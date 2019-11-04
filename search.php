@@ -1,44 +1,44 @@
-<?php
+<?php 
     include("./classes/db_connection.php");
     include("./classes/advertisement.php");
     include("./classes/user.php");
     include("./classes/comment.php");    
     session_start();
 
-    $db_con = new DB_connection();
-    $query_ad_result = $db_con->makeQuery("SELECT ID, title, user, createdAt, logo FROM advertisements ORDER BY ID DESC;");
-    $ads = array();
-    foreach ($query_ad_result as $ad) {
-        array_push($ads, new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"]));
+    if(isset($_GET["query"])) {
+        $query = $_GET["query"];
+        // echo $query;
+        $db_con = new DB_connection();
+        $sql = "SELECT * FROM advertisements WHERE MATCH(title, shortInfo, fullInfo) AGAINST('$query')";
+        $query_ad_result = $db_con->makeQuery($sql);
+        $ads = array();
+        foreach ($query_ad_result as $ad) {
+            array_push($ads, new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"]));
+        }
     }
+
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-<?php 
-    include('components/style_comp/head.php');
-?>
+    <?php include("./components/style_comp/head.php"); ?>
 <body>
     <script>
         function getDetails(adID) {
             window.location.href = "/adInfo.php?id="+adID;
-            // console.log(adID);
         }
     </script>
-    <?php 
-        include('components/style_comp/header.php');
-    ?>
-    
-
-    <div>
-        <span>
-            Hi! Nothing to load, but all is working right (Maybe)!
-        </span>
-        <br>
-        
-
-        <div class="box">
-            <div class="columns is-multiline">
+    <?php include("./components/style_comp/header.php"); ?>
+    <h1 class="title has-text-centered">Your search: "<span class="has-text-info"><?=$query?></span>" results!</h1>
+    <div class="box">
+        <?php if(empty($ads)):?>
+            <div class="subtitle has-text-centered">
+                    Sorry i cant find anything :(
+            </div>
+        <?php else:?>
+        <div class="columns is-multiline">
+            
+                
             <?php foreach($ads as $ad): ?> 
                 <div class="container column is-one-third">
                     
@@ -73,12 +73,12 @@
                     </div>
 
                 </div>
-            <?php endforeach; ?> 
-            </div>
+            <?php endforeach; ?>
+            <?php endif;?>
         </div>
     </div>
-    <?php 
-        include('components/style_comp/footer.php');
-    ?>
+
+
+    <?php include("./components/style_comp/footer.php"); ?>
 </body>
 </html>

@@ -25,8 +25,11 @@
             $this->fInfo = $fInfo;
         }
         
+        public function setTitle($title) {
+            $this->title = $title;
+        }
         public function getFullInfo() {
-            echo htmlspecialchars($this->fInfo); 
+            return htmlspecialchars($this->fInfo);
         }
 
         public function getSInfo() {
@@ -54,6 +57,10 @@
 
             echo $username[0]["username"];
         }
+        
+        public function getUserID() {
+            return $this->user;
+        }
 
         public function getCreatedAt() {
             echo $this->createdAt;
@@ -80,10 +87,13 @@
 
         public function deleteAdvetisement() {
             $db_con = new DB_connection();
-            $sql = "DELETE FROM advertisements WHERE ID = '$this->ID'";
-            
-            $db_con->makeQuery($sql);
-
+            $sql = "DELETE com.* FROM advertisements AS ad INNER JOIN comments as com ON com.advertisement = ad.ID WHERE ad.ID = '$this->id'";
+            $db_con->makeDeleteQuery($sql);
+            $sql = "DELETE FROM advertisements WHERE ID = '$this->id'";
+            $db_con->makeDeleteQuery($sql);
+            if ($this->logo != "makuad_logo.png") {
+                unlink("./img/".$this->logo);
+            }
             $db_con = null;
             unset($db_con);
         }

@@ -2,8 +2,7 @@
     include("./classes/db_connection.php");
     include("./classes/advertisement.php");
     include("./classes/user.php");
-    include("./classes/comment.php");
-
+    include("./classes/comment.php");    
     session_start();
 
     
@@ -17,14 +16,18 @@
         $ad->setShortInfo($res["shortInfo"]);
         $ad->setFullInfo($res["fullInfo"]);
         // echo $res["fullInfo"];  
+
+        $comments = array();
+        $db_comments = Comment::getAdComments($ad->getID());
+
+        foreach($db_comments as $com) {
+            array_push($comments, new Comment($com["comment"], $com["date"], $com["author"], $com["advertisement"]));
+        }
     }
     
-    $comments = array();
-    $db_comments = Comment::getAdComments($ad->getID());
+    
 
-    foreach($db_comments as $com) {
-        array_push($comments, new Comment($com["comment"], $com["date"], $com["author"], $com["advertisement"]));
-    }
+    
     
     // print_r($comments);
 
@@ -64,7 +67,9 @@
                 <?php $ad->getTitle(); ?>
             </div>
             <div class="box">
-                <?php $ad->getFullInfo(); ?>
+                <div class="makuad-overflow-auto">
+                    <?= $ad->getFullInfo(); ?>
+                </div>
             </div>
         </div>
     </div>

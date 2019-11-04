@@ -1,5 +1,5 @@
 .adv-body {
-    height: 100px; 
+    height: 100px;
     overflow: hidden;
 }
 
@@ -12,7 +12,7 @@
     padding: 5px 10px !important;
 }
 
-.adv-foot-username{
+.adv-foot-username {
     width: 200px;
 }
 
@@ -22,4 +22,15 @@
 
 .makuad-small-pad {
     padding: 4px !important;
+}
+
+.makuad-overflow-auto {
+    /* overflow: auto; */
+    max-height: 30em;
+    overflow: auto;
+    word-wrap: break-word;
+}
+
+.makuad-create-ad-logo {
+    display: block;
 }

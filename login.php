@@ -1,6 +1,10 @@
 <?php 
-    include("./classes/user.php");
     include("./classes/db_connection.php");
+    include("./classes/advertisement.php");
+    include("./classes/user.php");
+    include("./classes/comment.php");    
+    session_start();
+    
     
     $errors = array("email" => "", "password" => "", "login" => "");
     if (isset($_POST["submit"])) {
@@ -19,7 +23,6 @@
             if ($logUser == NULL) {
                 $errors["login"] = "Incorrect email or password! Please try again!";
             } else {
-                session_start();
                 $_SESSION["logged"] = $logUser;
                 header("Location: index.php");
             }

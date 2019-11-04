@@ -1,7 +1,14 @@
 <?php
     // date_default_timezone_set("Latvia/Riga");
-    session_start();
 
+    if(isset($_GET["search"])) {
+        if (empty($_GET["search"])) {
+            header("Location: .");
+        } else {
+            header("Location: search.php?query=".$_GET["search"]);
+        }
+        echo "keeeeeeel";
+    }
     
 
     if($_SERVER["QUERY_STRING"] == "logout") {
@@ -48,6 +55,16 @@
                 </div>
             </div>
 
+            <form action="" method="GET">
+                <div class="field has-addons navbar-item">
+                    <div class="control">
+                        <input class="input" name="search" type="text" placeholder="Search">
+                    </div>
+                    <div class="control">
+                        <input class="button is-info" type="submit" value="search">
+                    </div>
+                </div>
+            </form>
 
             <div class="navbar-end">
                 
