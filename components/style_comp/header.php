@@ -19,7 +19,7 @@
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
             <span aria-hidden="true"></span>
             <span aria-hidden="true"></span>
-            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>    
             </a>
         </div>
 
@@ -57,7 +57,7 @@
                         <i class="fas fa-plus "></i>
                     </a>
                     <div id="username">
-                    <?php $logUser ? $logUser->getUsername() : ""; ?>
+                        <?php $logUser ? $logUser->getUsername() : ""; ?>
                     </div>
                     <div class="buttons">
                         <?php if(!$logUser): ?>
@@ -69,6 +69,9 @@
                             Log in
                         </a>
                         <?php else: ?>
+                        <a class="button has-text-white is-primary is-rounded custom-button" href="profile.php">
+                            <i class="fas fa-user "></i>
+                        </a>
                         <a class="button is-light" href=<?php echo $_SERVER["PHP_SELF"]."?logout"?>>
                             Log out
                         </a>

@@ -21,9 +21,16 @@
         if (!array_filter($errors)) {
             session_start();
             
-            $title = $_POST["title"];
-            $sInfo = $_POST["sInfo"];
-            $fInfo = $_POST["fInfo"];
+            // htmlspecialchars_decode
+            
+            $title = addslashes($_POST["title"]);
+            $sInfo = addslashes($_POST["sInfo"]);
+            $buff = addslashes($_POST["fInfo"]);
+            $fInfo = <<<MARKER
+$buff
+MARKER;
+            // echo $title;
+            // $fInfo = htmlspecialchars($_POST["fInfo"]);
             $date = date("20y-m-d", time());
 
             $ad = new Advertisement(NULL, $title, $_SESSION["logged"]->getID(), $date, NULL);

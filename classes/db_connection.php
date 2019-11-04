@@ -25,6 +25,15 @@
             return $fetchedResult;
         }
 
+        public function makeDeleteQuery($sql) {
+            $result = $this->con->query($sql);
+            if($result) {
+                // echo "Selected very GOOD!";
+            } else {
+                echo "query error (" .   $this->con->errno . "):" . $this->con->error;
+            }            
+        }
+
         public function makeInsertQuery($sql) {
             $result = $this->con->query($sql);
             if($result) {

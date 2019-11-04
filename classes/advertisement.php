@@ -29,12 +29,16 @@
             echo htmlspecialchars($this->fInfo); 
         }
 
+        public function getSInfo() {
+            echo htmlspecialchars($this->sInfo);
+        }
+
         public function getLogo() {
             echo $this->logo;
         }
 
-        public function getId() {
-            echo $this->id;
+        public function getID() {
+            return $this->id;
         }
 
         public function getTitle() {
@@ -67,11 +71,21 @@
 
         public function createAdvertisement($sInfo, $fInfo) {
             $db_con = new DB_connection();
-            $sql = "INSERT INTO advertisements (title, user, createdAt, shortInfo, fullInfo, logo) VALUES ('$this->title','$this->user','$this->createdAt', '$sInfo', '$fInfo', '$this->logo')";
+            $sql = "INSERT INTO advertisements (title, user, createdAt, shortInfo, fullInfo, logo) VALUES ('{$this->title}','$this->user','$this->createdAt', '{$sInfo}', '{$fInfo}', '$this->logo')";
             $ID = $db_con->makeInsertQuery($sql);
             $db_con = null;
             unset($db_con);
             return $ID;
+        }
+
+        public function deleteAdvetisement() {
+            $db_con = new DB_connection();
+            $sql = "DELETE FROM advertisements WHERE ID = '$this->ID'";
+            
+            $db_con->makeQuery($sql);
+
+            $db_con = null;
+            unset($db_con);
         }
 
         public function uploadFile($file, $ID) {
@@ -127,5 +141,6 @@
                 }
             }
         }
+
     }
 ?>

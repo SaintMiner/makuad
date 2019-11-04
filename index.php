@@ -26,7 +26,7 @@
     $db_con = new DB_connection();
     
 
-    $query_ad_result = $db_con->makeQuery("SELECT ID, title, user, createdAt, logo FROM advertisements;");
+    $query_ad_result = $db_con->makeQuery("SELECT ID, title, user, createdAt, logo FROM advertisements ORDER BY ID DESC;");
     $ads = array();
     foreach ($query_ad_result as $ad) {
         array_push($ads, new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"]));
@@ -64,9 +64,9 @@
                     
                     <h6 class="has-text-centered card label has-background-primary"><?php $ad->getTitle();?></h6>
                     
-                    <div onClick="getDetails(<?php $ad->getId()?>)" class="card adv-body">
+                    <div onClick="getDetails(<?php echo $ad->getID()?>)" class="card adv-body">
                         <div class="image is-96x96 is-pulled-left box" >
-                            <img src="./img/<?php $ad->getLogo(); ?>" alt="no">
+                            <img src="./img/<?php $ad->getLogo(); ?>" alt="Advertisement Logo">
                         </div>
                         <div>
                             <p >

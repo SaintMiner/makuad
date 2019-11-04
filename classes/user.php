@@ -24,6 +24,27 @@
         public function getEmail() {
             echo $this->email;
         }
+        
+        public function getUserAdvertisements() {
+            $db_con = new DB_connection()            ;
+            
+            $sql = "SELECT * FROM advertisements WHERE user = '$this->id' ORDER BY ID DESC";
+            $userAds = array();
+
+            $query_ads = $db_con->makeQuery($sql);
+            
+            foreach($query_ads as $ad) {
+                $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"]);
+                $buff->setFullInfo($ad["fullInfo"]);
+                $buff->setShortInfo($ad["shortInfo"]);
+                array_push($userAds, $buff);
+            }
+
+            $db_con = null;
+            unset($db_con);
+
+            return $userAds;
+        }
 
         public function checkExistUser() {
             $db_con = new DB_connection();
