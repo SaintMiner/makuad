@@ -4,7 +4,7 @@
     include("./classes/user.php");
     include("./classes/comment.php");    
     session_start();
-    
+    $editAD = NULL;
     $editMode = false;
 
     if(isset($_GET["edit"])) {
@@ -13,17 +13,17 @@
         $editID = $_GET["edit"];
         $sql = "SELECT * FROM advertisements WHERE ID = '$editID'";
         $res = $db_con->makeQuery($sql)[0];
-        $editAD = new Advertisement($res["ID"], $res["title"], $res["user"], $res["createdAt"], $res["logo"]);
+        $editAD = new Advertisement($res["ID"], $res["title"], $res["user"], $res["createdAt"], $res["logo"], $res["category"]);
         $editAD->setFullInfo($res["fullInfo"]);
         $editAD->setShortInfo($res["shortInfo"]);
         $db_con = null;
         unset($db_con);
+        // echo $editAD->getCategory();
     }
-    
-    print_r($_FILES["fileToUpload"]);
 
     $err_name = array( array("title","title"), array("sInfo","short info"), array("fInfo","full info"));
     $errors = array("title" => "", "sInfo" => "", "fInfo" => "", "logo"=>"");
+
     if(isset($_POST["submit"]) && !$editMode) {
 
         foreach($err_name as $err) {
@@ -43,16 +43,17 @@
 
         if (!array_filter($errors)) {
             $title = addslashes($_POST["title"]);
+            $selCategory = $_POST["category"];
             $sInfo = addslashes($_POST["sInfo"]);
             $buff = addslashes($_POST["fInfo"]);
 $fInfo = <<<MARKER
 $buff
 MARKER;
             $date = date("20y-m-d", time());
-            $ad = new Advertisement(NULL, $title, $_SESSION["logged"]->getID(), $date, NULL);
+            $ad = new Advertisement(NULL, $title, $_SESSION["logged"]->getID(), $date, NULL, $selCategory);
             $file_id = date("ymdU").rand(1,1000);
             $errors["logo"] = $ad->uploadFile($_FILES["fileToUpload"], $file_id);
-            echo $errors["logo"];
+            // echo $errors["logo"];
             if (!array_filter($errors)) {
                 $ad->createAdvertisement($sInfo, $fInfo);
                 header("Location: ./index.php");
@@ -62,12 +63,8 @@ MARKER;
 
     if (isset($_POST["save"]) && $editMode) {
 
-        echo "edit mode";
-        $editAD->setShortInfo($_POST["sInfo"]);
-        $editAD->setFullInfo($_POST["fInfo"]);
-        $editAD->setTitle($_POST["title"]);
-
-
+        // echo "edit mode";
+        
         foreach($err_name as $err) {
             if(empty($_POST[$err[0]])) {
                 $errors[$err[0]] = "Please, fill in ".$err[1]." field.";
@@ -83,9 +80,28 @@ MARKER;
             $errors["fInfo"] = "";
         }
 
-        if (!array_filter($errors)) {
-            if(file_exists($editAD->getLogo())) {
+        $editAD->setShortInfo(addslashes($_POST["sInfo"]));
+        $editAD->setFullInfo(addslashes($_POST["fInfo"]));
+        $editAD->setTitle(addslashes($_POST["title"]));
+        $editADLogo = "./img/".$editAD->getLogo();
+        $editAD->setCategory($_POST["category"]);
 
+        if (!array_filter($errors)) {
+            if(!file_exists("./img/".$_FILES["fileToUpload"]["name"])) {
+                $file_id = date("ymdU").rand(1,1000);
+                $errors["logo"] = $editAD->uploadFile($_FILES["fileToUpload"], $file_id);
+                if (!array_filter($errors)) {
+                    if ($editADLogo != "./img/makuad_logo.png") {
+                        unlink($editADLogo);
+                        // echo $editADLogo;
+                    }
+                    $editAD->editSaveAdvertisement();
+                    header("Location: ./index.php");
+                    // echo "DONE!";
+                }
+            } else {
+                $editAD->editSaveAdvertisement();
+                header("Location: ./index.php");
             }
         }
 
@@ -142,7 +158,7 @@ MARKER;
                     <label class="label">Logo</label>
                     <div class="file level">
                         <label class="file-label">
-                            <input class="file-input" type="file" name="fileToUpload" onchange="setfilename(this); " value="<?=$_FILES["fileToUpload"]?>">
+                            <input class="file-input" type="file" name="fileToUpload" onchange="setfilename(this); " value="<?= $editAD ? "./img/".$editAD->getLogo() : $_FILES["fileToUpload"]?>">
                             <span class="file-cta">
                             <span class="file-icon">
                                 <i class="fas fa-upload"></i>
@@ -157,7 +173,14 @@ MARKER;
                             <img id="yourLogo" src="./img/<?= !$editAD ? "makuad_logo.png" : $editAD->getLogo()  ?>" alt="Your Advertisement Logo">
                         </div>
                     </div>
-                    
+                    <label class="label">Category</label>
+                    <div class="select is-medium">
+                        <select name="category" id="">
+                            <?php foreach(Category::getCategories() as $category): ?>
+                                <option value="<?=$category->getID()?>" <?= $editAD ? $editAD->getCategory() == $category->getID() ? "selected" : "" : "" ?>><?=$category->getName()?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
                     <span class="help is-danger"><?php print $errors["logo"]?></span>
                     <br>
                     <div class="is-centered buttons">

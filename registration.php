@@ -1,5 +1,6 @@
 <?php 
     include("./classes/db_connection.php");
+    
     include("./classes/advertisement.php");
     include("./classes/user.php");
     include("./classes/comment.php");    

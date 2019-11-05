@@ -8,13 +8,19 @@
         private $logo;
         private $sInfo;
         private $fInfo;
+        private $category;
         
-        public function __construct($id, $title, $user, $createdAt, $logo) {
+        public function __construct($id, $title, $user, $createdAt, $logo, $category) {
             $this->id = $id;
             $this->title = $title;
             $this->user = $user;
             $this->createdAt = $createdAt;
             $this->logo = $logo;
+            $this->category = $category;
+        }
+
+        public function setCategory($category) {
+            $this->category = $category;
         }
 
         public function setShortInfo($sInfo) {
@@ -28,16 +34,21 @@
         public function setTitle($title) {
             $this->title = $title;
         }
+
+        public function getCategory() {
+            return $this->category;
+        }
+
         public function getFullInfo() {
             return htmlspecialchars($this->fInfo);
         }
 
         public function getSInfo() {
-            echo htmlspecialchars($this->sInfo);
+            return htmlspecialchars($this->sInfo);
         }
 
         public function getLogo() {
-            echo $this->logo;
+            return $this->logo;
         }
 
         public function getID() {
@@ -76,13 +87,23 @@
             echo $shortInfo[0]["shortInfo"];
         }
 
+
         public function createAdvertisement($sInfo, $fInfo) {
             $db_con = new DB_connection();
-            $sql = "INSERT INTO advertisements (title, user, createdAt, shortInfo, fullInfo, logo) VALUES ('{$this->title}','$this->user','$this->createdAt', '{$sInfo}', '{$fInfo}', '$this->logo')";
+            $sql = "INSERT INTO advertisements (title, user, createdAt, shortInfo, fullInfo, logo, category) VALUES ('{$this->title}','$this->user','$this->createdAt', '{$sInfo}', '{$fInfo}', '$this->logo', '$this->category')";
             $ID = $db_con->makeInsertQuery($sql);
             $db_con = null;
             unset($db_con);
             return $ID;
+        }
+        
+        public function editSaveAdvertisement() {
+            $db_con = new DB_connection();
+            $sql = "UPDATE advertisements SET logo = '$this->logo', title = '$this->title', shortInfo = '$this->sInfo', fullInfo = '$this->fInfo', category = '$this->category' WHERE ID = '$this->id'";
+            $db_con->makeUpdateQuery($sql);
+            $db_con = null;
+            unset($db_con);
+            // return $ID;
         }
 
         public function deleteAdvetisement() {

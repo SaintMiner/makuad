@@ -31,6 +31,10 @@
     word-wrap: break-word;
 }
 
+.makuad-word-wrap {
+    word-wrap: break-word;
+}
+
 .makuad-create-ad-logo {
     display: block;
 }

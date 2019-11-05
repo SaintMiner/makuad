@@ -1,5 +1,8 @@
 <?php
     // date_default_timezone_set("Latvia/Riga");
+    // include("../../classes/category.php");
+    include("/usbwebserver/makuad/version_h/classes/category.php");
+    // include("../../classes/db_connection.php");
 
     if(isset($_GET["search"])) {
         if (empty($_GET["search"])) {
@@ -15,12 +18,14 @@
         // unset($_SESSION["logged"]);
         session_unset();
     }
+
     if ($_SESSION["logged"]) {
         $logUser = $_SESSION["logged"];
     }
+
+    $categories = Category::getCategories();
 ?>
 <header>
-
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -41,22 +46,20 @@
                 </a>
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
-                        More
+                        Categories
                     </a>
                     <div class="navbar-dropdown">
-                        <a class="navbar-item">
-                            Par Mums
-                        </a>
-                        <hr class="navbar-divider">
-                        <a class="navbar-item">
-                            Report
-                        </a>
+                        <?php  foreach($categories as $category): ?>
+                            <a class="navbar-item" href=<?="search.php?category=".$category->getID()?>>
+                                <?=$category->getName(); ?>
+                            </a>
+                        <?php  endforeach; ?>
                     </div>
                 </div>
             </div>
 
-            <form action="" method="GET">
-                <div class="field has-addons navbar-item">
+            <form class="navbar-item" action="" method="GET">
+                <div class="field has-addons">
                     <div class="control">
                         <input class="input" name="search" type="text" placeholder="Search">
                     </div>

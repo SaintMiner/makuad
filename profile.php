@@ -61,13 +61,13 @@
             </div>
             <?php foreach($userAds as $key => $ad):?>
                 <div class="card container column is-four-fifths box">
-                    <div class="subtitle"><?php  $ad->getTitle(); ?></div>
+                    <div class="subtitle"><?=$ad->getTitle(); ?></div>
                     
                     <div class="adv-body card">
                         <div class="image is-96x96 is-pulled-left box" >
-                                <img src="./img/<?php $ad->getLogo(); ?>" alt="Advertisement Logo">
+                                <img src="./img/<?=$ad->getLogo(); ?>" alt="Advertisement Logo">
                         </div>
-                        <?php  $ad->getSInfo(); ?></div>
+                        <?=$ad->getSInfo(); ?></div>
                     <div class="level ">
                         <div class="level-left">
                             <div class="buttons container makuad-small-pad">

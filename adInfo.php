@@ -12,7 +12,7 @@
         $db_con = new DB_connection();
         $sql = "SELECT * FROM advertisements WHERE ID = '$adId'";
         $res = $db_con->makeQuery($sql)[0];
-        $ad = new Advertisement($res["ID"], $res["title"], $res["user"], $res["createdAt"], $res["logo"]);
+        $ad = new Advertisement($res["ID"], $res["title"], $res["user"], $res["createdAt"], $res["logo"], $res["category"]);
         $ad->setShortInfo($res["shortInfo"]);
         $ad->setFullInfo($res["fullInfo"]);
         // echo $res["fullInfo"];  

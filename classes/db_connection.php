@@ -24,6 +24,15 @@
             $result->free();
             return $fetchedResult;
         }
+        
+        public function makeUpdateQuery($sql) {
+            $result = $this->con->query($sql);
+            if($result) {
+                // echo "Selected very GOOD!";
+            } else {
+                echo "query error (" .   $this->con->errno . "):" . $this->con->error;
+            }
+        }
 
         public function makeDeleteQuery($sql) {
             $result = $this->con->query($sql);
@@ -43,6 +52,7 @@
                 echo "query error (" .   $this->con->errno . "):" . $this->con->error;
             }
         }
+
 
     }
 ?>

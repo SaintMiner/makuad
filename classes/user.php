@@ -34,7 +34,7 @@
             $query_ads = $db_con->makeQuery($sql);
             
             foreach($query_ads as $ad) {
-                $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"]);
+                $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"], $ad["category"]);
                 $buff->setFullInfo($ad["fullInfo"]);
                 $buff->setShortInfo($ad["shortInfo"]);
                 array_push($userAds, $buff);
