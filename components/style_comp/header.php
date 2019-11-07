@@ -8,7 +8,7 @@
         if (empty($_GET["search"])) {
             header("Location: .");
         } else {
-            header("Location: search.php?query=".$_GET["search"]);
+            header("Location: search?query=".$_GET["search"]);
         }
         echo "keeeeeeel";
     }
@@ -17,6 +17,7 @@
     if($_SERVER["QUERY_STRING"] == "logout") {
         // unset($_SESSION["logged"]);
         session_unset();
+        header("Location: .");
     }
 
     if ($_SESSION["logged"]) {
@@ -38,7 +39,7 @@
         <div id="navbarBasicExample" class="navbar-menu">
 
             <div class="navbar-start">
-                <a class="navbar-item" href="index.php">
+                <a class="navbar-item" href=".">
                     Home
                 </a>
                 <a class="navbar-item">
@@ -50,7 +51,7 @@
                     </a>
                     <div class="navbar-dropdown">
                         <?php  foreach($categories as $category): ?>
-                            <a class="navbar-item" href=<?="search.php?category=".$category->getID()?>>
+                            <a class="navbar-item" href=<?="search?category=".$category->getID()?>>
                                 <?=$category->getName(); ?>
                             </a>
                         <?php  endforeach; ?>
@@ -73,7 +74,7 @@
                 
                 
                 <div class="navbar-item">
-                    <a class="button has-text-white is-primary is-rounded custom-button" href="createAd.php">
+                    <a class="button has-text-white is-primary is-rounded custom-button" href="createAd">
                         <i class="fas fa-plus "></i>
                     </a>
                     <div id="username">
@@ -82,14 +83,14 @@
                     <div class="buttons">
                         <?php if(!$logUser): ?>
                         
-                        <a class="button is-primary" href="registration.php">
+                        <a class="button is-primary" href="registration">
                             <strong>Sign up</strong>
                         </a>
-                        <a class="button is-light" href="login.php">
+                        <a class="button is-light" href="login">
                             Log in
                         </a>
                         <?php else: ?>
-                        <a class="button has-text-white is-primary is-rounded custom-button" href="profile.php">
+                        <a class="button has-text-white is-primary is-rounded custom-button" href="profile">
                             <i class="fas fa-user "></i>
                         </a>
                         <a class="button is-light" href=<?php echo $_SERVER["PHP_SELF"]."?logout"?>>

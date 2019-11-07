@@ -6,7 +6,7 @@
     session_start();
 
     if (!$_SESSION["logged"]) {
-        header("Location: login.php");
+        header("Location: login");
     } else {
         $profile = $_SESSION["logged"];
         $userAds = $profile->getUserAdvertisements();
@@ -20,12 +20,12 @@
         if ($deleteAd->getUserID() == $profile->getID()) {
             $deleteAd->deleteAdvetisement();
             // echo "delete: ".$ID;
-            header("Location: profile.php");
+            header("Location: profile");
         }
     } elseif (isset($_GET["edit"])) {
         $ID = $_GET["edit"];
         $editAd = $userAds[$ID];
-        header("Location: createAd.php?edit=".$editAd->getID());
+        header("Location: createAd?edit=".$editAd->getID());
     }
 
     

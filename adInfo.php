@@ -5,7 +5,6 @@
     include("./classes/comment.php");    
     session_start();
 
-    
     $ad;
     if(isset($_GET["id"])) {
         $adId =  $_GET["id"];
@@ -15,8 +14,15 @@
         $ad = new Advertisement($res["ID"], $res["title"], $res["user"], $res["createdAt"], $res["logo"], $res["category"]);
         $ad->setShortInfo($res["shortInfo"]);
         $ad->setFullInfo($res["fullInfo"]);
+        $ad->setViews($res["views"]);
         // echo $res["fullInfo"];  
-
+        if(isset($_POST["rate"])) {
+            // echo $ad->isRated($_SESSION["logged"]->getID());
+            $ad->rateAD($_SESSION["logged"]->getID(), $ad->getID());
+            header("Location: adInfo?id=".$ad->getID());
+        } else {
+            $ad->addView();
+        }
         $comments = array();
         $db_comments = Comment::getAdComments($ad->getID());
 
@@ -24,7 +30,6 @@
             array_push($comments, new Comment($com["comment"], $com["date"], $com["author"], $com["advertisement"]));
         }
     }
-    
     
 
     
@@ -63,13 +68,31 @@
     
     <div class="columns is-centered">
         <div class="column is-two-thirds">
+            
             <div class="title has-text-centered">
                 <?php $ad->getTitle(); ?>
+            </div>
+            <div class="level">
+                <div class="level-left">
+                    <span><i class="fas fa-eye"></i></span>
+                    <span><?=$ad->getViews(); ?></span>
+                </div>
+                <div class="level-right">
+                    <span><i class="fas fa-thumbs-up"></i></span>
+                    <span><?=$ad->getRating()?></span>
+                </div>
             </div>
             <div class="box">
                 <div class="makuad-overflow-auto">
                     <?= $ad->getFullInfo(); ?>
                 </div>
+            </div>
+            <div class="field buttons is-centered">
+                <?php if($_SESSION["logged"]): ?>
+                    <form action="" method="POST">
+                        <input class="button is-primary" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "not cool" : "cool"?>" name="rate">
+                    </form>
+                <?php endif; ?>
             </div>
         </div>
     </div>
@@ -88,7 +111,7 @@
                 <div class="media-content">
                     <div class="field">
                     <p class="control">
-                        <textarea class="textarea" placeholder="Add a comment..." name="comment" ><?php echo $_POST["comment"]?></textarea>
+                        <textarea class="textarea" placeholder="Add a comment..." name="comment" ></textarea>
                     </p>
                     </div>
                     <nav class="level">
@@ -110,14 +133,14 @@
                 <div class="media-content">
                     <p>
                         <span>
-                            <strong> <?php  echo $com->getAuthor(); ?></strong>
+                            <strong> <?=$com->getAuthor(); ?></strong>
                         </span>
                         <span class="is-pulled-right">
-                            <small> Date: <?php  echo $com->getDate();?></small>
+                            <small> Date: <?=$com->getDate();?></small>
                         </span>
                     </p>
                     <p>
-                        <?php  echo $com->getComment(); ?>
+                        <?= $com->getComment(); ?>
                     </p>
                 </div>
             </article>

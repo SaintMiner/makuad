@@ -9,7 +9,14 @@
     $query_ad_result = $db_con->makeQuery("SELECT * FROM advertisements ORDER BY ID DESC;");
     $ads = array();
     foreach ($query_ad_result as $ad) {
-        array_push($ads, new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"], $ad["category"]));
+        $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"], $ad["category"]);
+        $buff->setViews($ad["views"]);
+        array_push($ads, $buff);
+    }
+
+    if(isset($_POST["rate"])) {
+        $ads[$_POST["adKey"]]->rateAD($_SESSION["logged"]->getID(), $ads[$_POST["adKey"]]->getID());
+        header("Location: .");
     }
 ?>
 
@@ -21,7 +28,7 @@
 <body>
     <script>
         function getDetails(adID) {
-            window.location.href = "/adInfo.php?id="+adID;
+            window.location.href = "/adInfo?id="+adID;
             // console.log(adID);
         }
     </script>
@@ -39,7 +46,7 @@
 
         <div class="box">
             <div class="columns is-multiline">
-            <?php foreach($ads as $ad): ?> 
+            <?php foreach($ads as $key => $ad): ?> 
                 <div class="container column is-one-third">
                     
                     <h6 class="has-text-centered card label has-background-primary"><?php $ad->getTitle();?></h6>
@@ -65,10 +72,21 @@
                     </div>
 
                     <div class="card level">
+                        <div class="level-left">
+                            <span><i class="fas fa-eye"></i></span>
+                            <span><?=$ad->getViews(); ?></span>
+                        </div>
                         <div class="level-item">
-                            <button class="button is-small is-primary">
-                               cool 
-                            </button>
+                            <?php if($_SESSION["logged"]):?>
+                                <form method="POST">
+                                    <input type="hidden" value=<?=$key?> name="adKey">
+                                    <input class="button is-primary is-small" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "not cool" : "cool"?>" name="rate">
+                                </form>
+                            <?php endif;?>
+                        </div>
+                        <div class="level-right">
+                            <span><i class="fas fa-thumbs-up"></i></span>
+                            <span><?=$ad->getRating()?></span>
                         </div>
                     </div>
 

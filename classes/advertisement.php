@@ -9,6 +9,7 @@
         private $sInfo;
         private $fInfo;
         private $category;
+        private $views;
         
         public function __construct($id, $title, $user, $createdAt, $logo, $category) {
             $this->id = $id;
@@ -33,6 +34,14 @@
         
         public function setTitle($title) {
             $this->title = $title;
+        }
+
+        public function setViews($views) {
+            $this->views = $views;
+        }
+
+        public function getViews() {
+            return $this->views;
         }
 
         public function getCategory() {
@@ -117,6 +126,46 @@
             }
             $db_con = null;
             unset($db_con);
+        }
+
+        public function addView() {
+            $db_con = new DB_connection();
+            $sql = "UPDATE advertisements SET views = views+1 WHERE ID = '$this->id'";
+            $db_con->makeUpdateQuery($sql);
+            $db_con = null;
+            unset($db_con);
+        }
+
+        public function rateAD($user, $ad) {
+            $db_con = new DB_connection();
+            $rated = $this->isRated($user);
+            if (!$rated) {
+                $sql = "INSERT INTO userrate (user, ad) VALUES ('$user', '$ad')";
+                $db_con->makeInsertQuery($sql);
+            } else {
+                $sql = "DELETE FROM userrate WHERE user = '$user' AND ad = '$ad'";
+                $db_con->makeDeleteQuery($sql);
+            }
+            $db_con = null;
+            unset($db_con);
+        }
+
+        public function isRated($user) {
+            $db_con = new DB_connection();
+            $sql = "SELECT count(*) as rated FROM `userrate` WHERE user = '$user' AND ad = '$this->id'";
+            $rated = $db_con->makeQuery($sql);
+            $db_con = null;
+            unset($db_con);
+            return $rated[0]["rated"];
+        }
+
+        public function getRating() {
+            $db_con = new DB_connection();
+            $sql = "SELECT count(*) as rated FROM `userrate` WHERE ad = '$this->id'";
+            $rated = $db_con->makeQuery($sql);
+            $db_con = null;
+            unset($db_con);
+            return $rated[0]["rated"];
         }
 
         public function uploadFile($file, $ID) {

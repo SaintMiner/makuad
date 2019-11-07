@@ -6,7 +6,7 @@
     session_start();
     $editAD = NULL;
     $editMode = false;
-
+    
     if(isset($_GET["edit"])) {
         $db_con = new DB_connection();
         $editMode = true;
@@ -18,6 +18,9 @@
         $editAD->setShortInfo($res["shortInfo"]);
         $db_con = null;
         unset($db_con);
+        if ($editAD->getUserID() != $_SESSION["logged"]->getID()) {
+            header("Location: .");
+        }
         // echo $editAD->getCategory();
     }
 
@@ -56,7 +59,7 @@ MARKER;
             // echo $errors["logo"];
             if (!array_filter($errors)) {
                 $ad->createAdvertisement($sInfo, $fInfo);
-                header("Location: ./index.php");
+                header("Location: ./index");
             }
         }
     }
@@ -96,12 +99,12 @@ MARKER;
                         // echo $editADLogo;
                     }
                     $editAD->editSaveAdvertisement();
-                    header("Location: ./index.php");
+                    header("Location: ./index");
                     // echo "DONE!";
                 }
             } else {
                 $editAD->editSaveAdvertisement();
-                header("Location: ./index.php");
+                header("Location: ./index");
             }
         }
 
@@ -125,7 +128,7 @@ MARKER;
         }
     </script>
     <?php include("./components/style_comp/header.php"); ?>
-    <?php if (!$_SESSION["logged"]): header("Location: login.php")?>
+    <?php if (!$_SESSION["logged"]): header("Location: login")?>
     <?php else: ?>
         <div class="columns is-centered">
             <div class="column is-half box">

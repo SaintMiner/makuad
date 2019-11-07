@@ -19,12 +19,12 @@
         }
         
         if (!array_filter($errors)) {
-            $logUser = User::login($email, $password);
+            $logUser = User::login($email, hash('ripemd160', $password));
             if ($logUser == NULL) {
                 $errors["login"] = "Incorrect email or password! Please try again!";
             } else {
                 $_SESSION["logged"] = $logUser;
-                header("Location: index.php");
+                header("Location: index");
             }
             
         }
@@ -46,7 +46,7 @@
             
             <label class="label">E-Mail</label>
             <div class="control has-icons-left has-icons-right">
-                <input class="input" type="text" placeholder="Your Email" name="email" value="<?php echo $email?>">
+                <input class="input" type="text" placeholder="Your Email" name="email" value="<?=$email?>">
                 <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                 </span>
@@ -54,7 +54,7 @@
                     <!-- <i class="fas  fa-exclamation-triangle"></i> -->
                 </span>
             </div>
-            <span class="help is-danger"><?php echo $errors["email"]?></span>
+            <span class="help is-danger"><?=$errors["email"]?></span>
             
             <label class="label">Password</label>
             <div class="control has-icons-left has-icons-right">
@@ -66,8 +66,8 @@
                     <!-- <i class="fas fa-exclamation-triangle"></i> -->
                 </span>
             </div>
-            <span class="help is-danger"><?php echo $errors["password"]?></span>
-            <span class="help is-danger"><?php echo $errors["login"]?></span>
+            <span class="help is-danger"><?=$errors["password"]?></span>
+            <span class="help is-danger"><?=$errors["login"]?></span>
 
             <span class="help is-danger"><?php ?></span>
             <br>

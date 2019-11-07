@@ -7,7 +7,7 @@
     session_start();
 
     if ($_SESSION["logged"]) {
-        header("Location: index.php");
+        header("Location: index");
     }
     // if(isset($_POST['submit'])) {
     //     echo htmlspecialchars($_POST['email']);
@@ -71,7 +71,7 @@
         if(array_filter($errors)) { //check for errors
             echo "errors in form!";
         } else {
-            $db_user->registerUser($password);
+            $db_user->registerUser(hash('ripemd160',$password));
             // $db_con = new DB_connection();    
             // $query_res = $db_con->makeQuery("SELECT ID FROM users WHERE username LIKE \"first_user\"");
             // unset($db_con);
@@ -79,7 +79,7 @@
             // if ($checkableUser->checkExistUser($checkableUser)) {
 
             // } 
-            header("Location: ./index.php");
+            header("Location: ./index");
             // header("Location: ./registration.php");
 
         }
@@ -99,7 +99,7 @@
  ?>
 <div class="columns is-mobile is-multiline is-centered">
     <div class="column is-half box">
-            <form class="field" action="registration.php" method="POST">
+            <form class="field" action="registration" method="POST">
 
             <h4 class="has-text-centered">USER REGISTRATION</h4>
             
