@@ -157,7 +157,7 @@
                     <h6 class="has-text-centered card label has-background-primary"><?=$ad->getTitle();?></h6>
                     
                     <div onClick="getDetails(<?=$ad->getID()?>)" class="card adv-body">
-                        <div class="image is-96x96 is-pulled-left box" >
+                        <div class="image is-96x96 is-pulled-left makuad-logo-padding">
                             <img src="./img/<?=$ad->getLogo(); ?>" alt="Advertisement Logo">
                         </div>
                         <div>

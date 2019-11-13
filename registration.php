@@ -29,7 +29,7 @@
         if(empty($username)) {
             $errors["username"] = 'Please, fill the username <br/>';
         } elseif (!preg_match('/^[a-zA-Z0-9\s]+$/', $username)) {
-            $errors["username"] = "Username can contain only uppercase and lowercase chars, number and spaces. Nedds to be 8 symbols minimum and 30 max";
+            $errors["username"] = "Username can contain only uppercase and lowercase chars, number and spaces. Nedds to be 8 symbols minimum and 32 max";
         } else {
             $errors["username"] = "";
         }

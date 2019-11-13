@@ -22,7 +22,8 @@
             // echo "delete: ".$ID;
             header("Location: profile");
         }
-    } elseif (isset($_GET["edit"])) {
+    } 
+    if (isset($_GET["edit"])) {
         $ID = $_GET["edit"];
         $editAd = $userAds[$ID];
         header("Location: createAd?edit=".$editAd->getID());
@@ -39,9 +40,41 @@
     include('components/style_comp/head.php');
 ?>
 <body>
+    <script>
+        function deleteConfirm(index) {
+            var element = document.getElementById("confirm");
+            element.classList.add("is-active");
+            var apply = document.getElementById("apply");
+            apply.setAttribute("onClick", "javascript: deleteTrue("+index+");");
+        }
+
+        function deleteTrue(index) {
+            // alert(index);
+            window.location.href = window.location.href + "?delete=" + index;
+        }
+
+        function deleteFalse() {
+            var element = document.getElementById("confirm");
+            element.classList.remove("is-active");
+        }
+    </script>
     <?php 
         include('components/style_comp/header.php');
     ?>
+    <div id="confirm" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="container box">
+                <div class="has-text-centered">Are you sure you want to delete this advertisement?</div>
+                <br>
+                <div class="buttons is-centered">
+                    <div id="apply" class="button is-success" onclick="deleteTrue()">OK</div>
+                    <div class="button is-danger" onclick="deleteFalse()">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="deleteFalse()"></button>
+    </div>
     <div class="columns box">
         <div class="column ">
             <div class="subtitle container">
@@ -75,7 +108,7 @@
                             <a class="button has-text-info box" href="<?="?edit=".$key ;?>">
                                 <i class="fas fa-pen"></i>
                             </a>
-                            <a class="button has-text-info box" href="<?="?delete=".$key ;?>">
+                            <a class="button has-text-info box" onclick="deleteConfirm(<?=$key?>)" >
                                 <i class="fas fa-trash"></i>
                             </a>
                             </div>

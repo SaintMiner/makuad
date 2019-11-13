@@ -67,8 +67,11 @@
     ?>
     
     <div class="columns is-centered">
+        
         <div class="column is-two-thirds">
-            
+            <div class="columns is-centered">
+                <img src="./img/<?=$ad->getLogo(); ?>" class="image" alt="Advertisement Logo">
+            </div>
             <div class="title has-text-centered">
                 <?php $ad->getTitle(); ?>
             </div>
