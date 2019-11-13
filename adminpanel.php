@@ -69,10 +69,12 @@
             
                 <div class="section">
                     <div class="container card">
+                        
                         <div class="image is-96x96 is-pulled-left makuad-logo-padding">
                             <img src="./img/<?=$ad->getLogo(); ?>" alt="Advertisement Logo">
                         </div>
                         <div>
+                        <div class="box is-marginless">
                             <div class="columns is-variable is-10 is-multiline">
                                 <div class="column is-full">
                                     <?php $ad->getTitle(); ?>
@@ -83,20 +85,31 @@
                                 
                             </div>
                         </div>
-                        <div class="card ">
+                            <div class="container is-fluid">
                             <span class=" is-clipped adv-foot-username">  
                                 <span class="has-text-weight-medium"> Created by </span> <?php $ad->getUser(); ?>
                             </span>
                             <span class="is-pulled-right">
                                 <span class="has-text-weight-medium"> Date: </span> <?php $ad->getCreatedAt();  ?>
                             </span>
+                            
+                            <div class="buttons container ">
+                                <a class="button box" onclick="banConfirm(<?=$key?>)" >
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                                <a class="button box" onclick="openProfile(<?=$key?>)" >
+                                    <i class="fas fa-user"></i>
+                                </a>
+                            </div>
+                            </div>
                         </div>
+                       
                     </div>
                     
                 </div>
                 <?php endforeach; ?>
             <?php elseif($tab == "Users"): ?>
-                <?php  foreach($users as $user): ?>
+                <?php  foreach($users as $key => $user): ?>
                     <div class="section">
                         <div class="container box">
                             <div class="card has-text-centered has-background-info has-text-white">
@@ -107,15 +120,17 @@
                                     ID: <span class="is-pulled-right"><?=$user->getID(); ?></span>
                                 </p>
                                 <p>
-                                E-mail: <span class="is-pulled-right"><?php $user->getEmail(); ?></span>
+                                    E-mail: <span class="is-pulled-right"><?php $user->getEmail(); ?></span>
                                 </p>
                             </div>
-                            <a class="button has-text-info box" onclick="deleteConfirm(<?=$key?>)" >
-                                <i class="fas fa-trash"></i>
-                            </a>
-                            <a class="button has-text-info box" onclick="deleteConfirm(<?=$key?>)" >
-                                <i class="fas fa-trash"></i>
-                            </a>
+                            <div class="buttons">
+                                <a class="button has-text-info box" onclick="banConfirm(<?=$key?>)" >
+                                    <i class="fas fa-ban"></i>
+                                </a>
+                                <a class="button has-text-info box" onclick="openProfile(<?=$key?>)" >
+                                    <i class="fas fa-user"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
