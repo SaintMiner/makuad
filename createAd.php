@@ -7,6 +7,12 @@
     $editAD = NULL;
     $editMode = false;
     
+    if (!$_SESSION["logged"]) {
+        header("Location: /login");
+    } elseif ( $_SESSION["logged"]->isBlocked()) {
+        header("Location: .");
+    }
+
     if(isset($_GET["edit"])) {
         $db_con = new DB_connection();
         $editMode = true;
@@ -24,19 +30,19 @@
         // echo $editAD->getCategory();
     }
 
-    $err_name = array( array("title","title"), array("sInfo","short info"), array("fInfo","full info"));
+    $err_name = array( array("title"," virsraksta"), array("sInfo"," īsu informacijas"), array("fInfo"," pilnas informacijas"));
     $errors = array("title" => "", "sInfo" => "", "fInfo" => "", "logo"=>"");
 
     if(isset($_POST["submit"]) && !$editMode) {
 
         foreach($err_name as $err) {
             if(empty($_POST[$err[0]])) {
-                $errors[$err[0]] = "Please, fill in ".$err[1]." field.";
+                $errors[$err[0]] = "Lūdzam, aipildit ".$err[1]."  lauku.";
             }
         }
 
         if (strlen($_POST["sInfo"]) > 300) {
-            $errors["sInfo"] = "Short info max symbol count 300!";
+            $errors["sInfo"] = "Īsu informaciju maksimalais simbolu ksaits ir 300!";
         }
         
         if (empty($_POST["fInfo"])) {
@@ -70,12 +76,12 @@ MARKER;
         
         foreach($err_name as $err) {
             if(empty($_POST[$err[0]])) {
-                $errors[$err[0]] = "Please, fill in ".$err[1]." field.";
+                $errors[$err[0]] = "Lūdzam aipildit ".$err[1]." lauku.";
             }
         }
 
         if (strlen($_POST["sInfo"]) > 300) {
-            $errors["sInfo"] = "Short info max symbol count 300!";
+            $errors["sInfo"] = "Īsu informaciju maksimalais simbolu ksaits ir 300!";
         }
 
         if (empty($_POST["fInfo"])) {
@@ -128,15 +134,13 @@ MARKER;
         }
     </script>
     <?php include("./components/style_comp/header.php"); ?>
-    <?php if (!$_SESSION["logged"]): header("Location: login")?>
-    <?php else: ?>
         <div class="columns is-centered">
             <div class="column is-half box">
                 <form action="" method="POST" enctype="multipart/form-data">
 
-                    <label class="label">Title</label>
+                    <label class="label">Virsraksts</label>
                     <div class="control has-icons-left has-icons-right">
-                        <input class="input" type="text" placeholder="Title" name="title" value="<?= !$editAD ? $_POST["title"] : $editAD->getTitle()?>">
+                        <input class="input" type="text" placeholder="Sludinajuma virsraksts" name="title" value="<?= !$editAD ? $_POST["title"] : $editAD->getTitle()?>">
                         <span class="icon is-small is-left">
                             <i class="fas fa-align-justify"></i>
                         </span>
@@ -146,19 +150,19 @@ MARKER;
                     </div>
                     <span class="help is-danger"><?php print $errors["title"]?></span>
 
-                    <label class="label">Short Info [300 max]</label>
+                    <label class="label">Īsa informacija [300 max]</label>
                     <div class="control has-icons-left has-icons-right">
                         <textarea class="textarea" name="sInfo" rows="3" ><?=!$editAD ? $_POST["sInfo"] : $editAD->getSInfo()?></textarea>
                     </div>
                     <span class="help is-danger"><?php print $errors["sInfo"]?></span>
 
-                    <label class="label">Full Info</label>
+                    <label class="label">Pilna informacija</label>
                     <div class="control has-icons-left has-icons-right">
                         <textarea class="textarea" name="fInfo" rows="5"><?=!$editAD ? $_POST["fInfo"] : $editAD->getFullInfo()?></textarea>
                     </div>
                     <span class="help is-danger"><?php print $errors["fInfo"]?></span>
 
-                    <label class="label">Logo</label>
+                    <label class="label">Logotips</label>
                     <div class="file level">
                         <label class="file-label">
                             <input class="file-input" type="file" name="fileToUpload" onchange="setfilename(this); " value="<?= $editAD ? "./img/".$editAD->getLogo() : $_FILES["fileToUpload"]?>">
@@ -167,7 +171,7 @@ MARKER;
                                 <i class="fas fa-upload"></i>
                             </span>
                             <span class="file-label">
-                                Choose a file…
+                               Izveleties failu...
                             </span>
                                 <input id="fileToUpload" name="uploadFileOne" type="text" disabled="disabled" class="file-name" value=""/>
                             </span>
@@ -176,7 +180,7 @@ MARKER;
                             <img id="yourLogo" src="./img/<?= !$editAD ? "makuad_logo.png" : $editAD->getLogo()  ?>" alt="Your Advertisement Logo">
                         </div>
                     </div>
-                    <label class="label">Category</label>
+                    <label class="label">Kategorija</label>
                     <div class="select is-medium">
                         <select name="category" id="">
                             <?php foreach(Category::getCategories() as $category): ?>
@@ -188,19 +192,14 @@ MARKER;
                     <br>
                     <div class="is-centered buttons">
                         <?php  if(!$editAD): ?>
-                            <input class="button is-primary" type="submit" name="submit" value="Create">
+                            <input class="button is-primary" type="submit" name="submit" value="Izveidot">
                         <?php  else: ?>
-                            <input class="button is-primary" type="submit" name="save" value="Save">
+                            <input class="button is-primary" type="submit" name="save" value="Saglabat">
                         <?php  endif; ?>
                     </div>
                 </form>
             </div>
         </div>
-    <?php endif; ?>
-    
-    
-
-
     <?php include("./components/style_comp/footer.php"); ?>
 </body>
 </html>

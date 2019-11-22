@@ -4,8 +4,16 @@
     include("./classes/user.php");
     include("./classes/comment.php");    
     session_start();
-
-    if (!$_SESSION["logged"]) {
+    if (isset($_GET["user"])) {
+        $id = $_GET["user"];
+        $db = new DB_connection();
+        $sql = "SELECT ID, username, email, role FROM users WHERE ID = '$id'";
+        $res = $db->makeQuery($sql)[0];
+        $profile = new User($res["username"], $res["email"], $res["ID"]);
+        $userAds = $profile->getUserAdvertisements();
+        $db = null;
+        unset($db);
+    } elseif (!$_SESSION["logged"]) {
         header("Location: login");
     } else {
         $profile = $_SESSION["logged"];
@@ -40,24 +48,6 @@
     include('components/style_comp/head.php');
 ?>
 <body>
-    <script>
-        function deleteConfirm(index) {
-            var element = document.getElementById("confirm");
-            element.classList.add("is-active");
-            var apply = document.getElementById("apply");
-            apply.setAttribute("onClick", "javascript: deleteTrue("+index+");");
-        }
-
-        function deleteTrue(index) {
-            // alert(index);
-            window.location.href = window.location.href + "?delete=" + index;
-        }
-
-        function deleteFalse() {
-            var element = document.getElementById("confirm");
-            element.classList.remove("is-active");
-        }
-    </script>
     <?php 
         include('components/style_comp/header.php');
     ?>
@@ -65,11 +55,11 @@
         <div class="modal-background"></div>
         <div class="modal-content">
             <div class="container box">
-                <div class="has-text-centered">Are you sure you want to delete this advertisement?</div>
+                <div class="has-text-centered">Jūs tišam gribat izdest šo sludinajumu?</div>
                 <br>
                 <div class="buttons is-centered">
-                    <div id="apply" class="button is-success" onclick="deleteTrue()">OK</div>
-                    <div class="button is-danger" onclick="deleteFalse()">CANCEL</div>
+                    <div id="apply" class="button is-success" onclick="deleteTrue()">JĀ</div>
+                    <div class="button is-danger" onclick="deleteFalse()">NĒ</div>
                 </div>
             </div>
         </div>
@@ -90,7 +80,7 @@
         </div>
         <div class="column is-three-quarters box columns is-multiline is-centered">
             <div class="notification has-text-centered is-primary title column is-full">
-                Your Advertisements
+                JŪSU SLUDINAJUMI
             </div>
             <?php foreach($userAds as $key => $ad):?>
                 <div class="card container column is-four-fifths box">
@@ -103,8 +93,10 @@
                         <?=$ad->getSInfo(); ?></div>
                     <div class="level ">
                         <div class="level-left">
-                            <div class="buttons container makuad-small-pad">
+                        <?php  if(!isset($_GET["user"])): ?>
 
+                            <div class="buttons container makuad-small-pad">
+                            
                             <a class="button has-text-info box" href="<?="?edit=".$key ;?>">
                                 <i class="fas fa-pen"></i>
                             </a>
@@ -112,9 +104,9 @@
                                 <i class="fas fa-trash"></i>
                             </a>
                             </div>
-
+                        <?php  endif; ?>
                         </div>
-                        <div class="level-right">Date: <?php  $ad->getCreatedAt(); ?></div>
+                        <div class="level-right">Datums: <?php  $ad->getCreatedAt(); ?></div>
                     </div>
                 </div>
             <?php endforeach; ?>

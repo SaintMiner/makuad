@@ -15,7 +15,7 @@
     
 
     if($_SERVER["QUERY_STRING"] == "logout") {
-        // unset($_SESSION["logged"]);
+        unset($_SESSION["logged"]);
         session_unset();
         header("Location: .");
     }
@@ -40,14 +40,14 @@
 
             <div class="navbar-start">
                 <a class="navbar-item" href=".">
-                    Home
+                    Galvena
                 </a>
-                <a class="navbar-item">
-                    Interesants (Soon)
+                <a class="navbar-item" href="/search?fPopular=2&filteredSearch=search">
+                    Interesants
                 </a>
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">
-                        Categories
+                        Kategorijas
                     </a>
                     <div class="navbar-dropdown">
                         <?php  foreach($categories as $category): ?>
@@ -62,10 +62,10 @@
             <form class="navbar-item" action="" method="GET">
                 <div class="field has-addons">
                     <div class="control">
-                        <input class="input" name="search" type="text" placeholder="Search">
+                        <input class="input" name="search" type="text" placeholder="Meklesana">
                     </div>
                     <div class="control">
-                        <input class="button is-info" type="submit" value="search">
+                        <input class="button is-info" type="submit" value="Meklet">
                     </div>
                 </div>
             </form>
@@ -84,18 +84,25 @@
                         <?php if(!$logUser): ?>
                         
                         <a class="button is-primary" href="registration">
-                            <strong>Sign up</strong>
+                            <strong>Pieregistreties</strong>
                         </a>
                         <a class="button is-light" href="login">
-                            Log in
+                            Pietekties
                         </a>
                         <?php else: ?>
                         <a class="button has-text-white is-primary is-rounded custom-button" href="profile">
                             <i class="fas fa-user "></i>
                         </a>
+                            <?php if($_SESSION["logged"]->getRole() == "admin"): ?>
+                                <a class="button has-text-white is-primary is-rounded custom-button" href="adminpanel">
+                                    <i class="fas fa-wrench "></i>
+                                </a>
+                            <?php endif; ?>
+                        
                         <a class="button is-light" href=<?php echo $_SERVER["PHP_SELF"]."?logout"?>>
-                            Log out
+                            Atteikties
                         </a>
+                        
                         <?php endif; ?>
                         
                     </div>

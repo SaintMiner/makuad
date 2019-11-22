@@ -93,7 +93,7 @@
             <div class="field buttons is-centered">
                 <?php if($_SESSION["logged"]): ?>
                     <form action="" method="POST">
-                        <input class="button is-primary" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "not cool" : "cool"?>" name="rate">
+                        <input class="button is-primary" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "nepatik" : "patik"?>" name="rate">
                     </form>
                 <?php endif; ?>
             </div>
@@ -102,7 +102,7 @@
 
     <div class="columns is-centered">
         <div class="column is-three-fifths box">
-            <h1 class="subtitle has-text-centered">Comments</h1>
+            <h1 class="subtitle has-text-centered">Komentari</h1>
 
             <?php if($_SESSION["logged"]): ?> 
                 <form  class="media" action="" method="POST">
@@ -114,13 +114,13 @@
                 <div class="media-content">
                     <div class="field">
                     <p class="control">
-                        <textarea class="textarea" placeholder="Add a comment..." name="comment" ></textarea>
+                        <textarea class="textarea" placeholder="Pievienot komentaru..." name="comment" ></textarea>
                     </p>
                     </div>
                     <nav class="level">
                     <div class="level-left">
                         <div class="level-item">
-                        <input type="submit" class="button is-info" value="Submit" name="submit">
+                        <input type="submit" class="button is-info" value="Pievienot" name="submit">
                         </div>
                     </div>
                     </nav>
@@ -139,7 +139,7 @@
                             <strong> <?=$com->getAuthor(); ?></strong>
                         </span>
                         <span class="is-pulled-right">
-                            <small> Date: <?=$com->getDate();?></small>
+                            <small> Datums: <?=$com->getDate();?></small>
                         </span>
                     </p>
                     <p>

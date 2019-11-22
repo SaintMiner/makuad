@@ -15,7 +15,7 @@
 
     if (isset($_GET["page"])) {
         $curPage = $_GET["page"];
-        echo "setted: ".$curPage;
+        // echo "setted: ".$curPage;
     } else {
         $curPage = 1;
     }
@@ -30,7 +30,7 @@
 
     if(isset($_POST["rate"])) {
         $ads[$_POST["adKey"]]->rateAD($_SESSION["logged"]->getID(), $ads[$_POST["adKey"]]->getID());
-        header("Location: .");
+        header("Location: ?page=".$curPage);
     }
 
     
@@ -42,23 +42,12 @@
     include('components/style_comp/head.php');
 ?>
 <body>
-    <script>
-        function getDetails(adID) {
-            window.location.href = "/adInfo?id="+adID;
-            // console.log(adID);
-        }
-    </script>
     <?php 
         include('components/style_comp/header.php');
     ?>
     
 
     <div>
-        <span>
-            Hi! Nothing to load, but all is working right (Maybe)!
-        </span>
-        <br>
-        
 
         <div class="box">
             <div class="columns is-multiline">
@@ -82,10 +71,10 @@
                     
                     <div class="card ">
                         <span class=" is-clipped adv-foot-username">  
-                            <span class="has-text-weight-medium"> Created by </span> <?php $ad->getUser(); ?>
+                            <span class="has-text-weight-medium"> Izveidoja: </span> <?php $ad->getUser(); ?>
                         </span>
                         <span class="is-pulled-right">
-                            <span class="has-text-weight-medium"> Date: </span> <?php $ad->getCreatedAt();  ?>
+                            <span class="has-text-weight-medium"> Datums: </span> <?php $ad->getCreatedAt();  ?>
                         </span>
                     </div>
 
@@ -98,7 +87,7 @@
                             <?php if($_SESSION["logged"]):?>
                                 <form method="POST">
                                     <input type="hidden" value=<?=$key?> name="adKey">
-                                    <input class="button is-primary is-small" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "not cool" : "cool"?>" name="rate">
+                                    <input class="button is-primary is-small" type="submit" value="<?= $ad->isRated($_SESSION["logged"]->getID()) ? "nepatik" : "patik"?>" name="rate">
                                 </form>
                             <?php endif;?>
                         </div>
@@ -119,10 +108,10 @@
         <nav class="pagination is-centered" role="navigation" aria-label="pagination">
             <?php if($pageCount > 5):?>
                 <?php if($curPage != 1):?>
-                    <a class="pagination-previous" href="?page=<?=$curPage-1?>">Previous</a>
+                    <a class="pagination-previous" href="?page=<?=$curPage-1?>">Iepriekšeja</a>
                 <?php endif;?>
                 <?php if($curPage != $pageCount):?>
-                    <a class="pagination-next" href="?page=<?=$curPage+1?>">Next page</a>
+                    <a class="pagination-next" href="?page=<?=$curPage+1?>">Nakama lapa</a>
                 <?php endif;?>
                 <ul class="pagination-list">
                     <?php for($page = $curPage-2; $page <= $curPage+2; $page++):?>
@@ -137,10 +126,10 @@
                 </ul>
             <?php elseif($pageCount > 1 && $pageCount <= 5): ?>
                 <?php if($curPage != 1):?>
-                    <a class="pagination-previous" href="?page=<?=$curPage-1?>">Previous</a>
+                    <a class="pagination-previous" href="?page=<?=$curPage-1?>">Iepriekšeja</a>
                 <?php endif;?>
                 <?php if($curPage != $pageCount):?>
-                    <a class="pagination-next" href="?page=<?=$curPage+1?>">Next page</a>
+                    <a class="pagination-next" href="?page=<?=$curPage+1?>">Nakama lapa</a>
                 <?php endif;?>
                 <ul class="pagination-list">
                     <?php for($page = 1; $page <=  $pageCount; $page++):?>

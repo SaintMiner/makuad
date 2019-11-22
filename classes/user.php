@@ -4,14 +4,32 @@
         private $username;
         private $email;
         private $id;
+        private $blocked;
+        private $role;
 
         public function __construct($username, $email, $id) {
             $this->id = $id;
             $this->username = $username;
             $this->email = $email;
+            $db = new DB_connection();
+            $sql = "SELECT r.name FROM users AS u INNER JOIN roles AS r ON r.ID = u.role WHERE u.ID = '$id'";
+            $res = $db->makeQuery($sql)[0];
+            $this->role = $res["name"];
+            $db = null;
+            unset($db);
         }
 
-        
+        public function setBlocked($blocked) {
+            $this->blocked = $blocked;
+        }
+
+        public function getRole() {
+            return $this->role;
+        }
+
+        public function getBlocked() {
+            return $this->blocked;
+        }
         
         public function getID() {
             return $this->id;
@@ -44,6 +62,27 @@
             unset($db_con);
 
             return $userAds;
+        }
+
+        public function isBlocked() {
+            $db = new DB_connection();
+            $sql = "SELECT blocked FROM users WHERE ID = '$this->id'";
+            $res = $db->makeQuery($sql)[0]["blocked"];
+            $db = null;
+            unset($db);
+            return $res;
+        }
+
+        public static function blockUser($id) {
+            $db_con = new DB_connection();
+            $sql =  "SELECT blocked FROM users WHERE ID = '$id'";
+            $blocked = !$db_con->makeQuery($sql)[0]["blocked"];
+            
+            $sql = "UPDATE users SET blocked = '$blocked' WHERE ID = '$id'";
+            $db_con->makeUpdateQuery($sql);
+            echo $sql;
+            $db_con = null;
+            unset($db_con);
         }
 
         public function checkExistUser() {

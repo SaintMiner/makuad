@@ -5,6 +5,9 @@
     include("./classes/comment.php");    
     session_start();
     
+    if ($_SESSION["logged"]) {
+        header("Location: .");
+    }
     
     $errors = array("email" => "", "password" => "", "login" => "");
     if (isset($_POST["submit"])) {
@@ -12,19 +15,19 @@
         $password = $_POST["password"];
 
         if (empty($email)) {
-            $errors["email"] = 'Please, Fill in email field';
+            $errors["email"] = 'Lūdzu aizpildiet e-pasta lauku';
         }
         if (empty($password)) {
-            $errors["password"] = 'Please, Fill in password field';
+            $errors["password"] = 'Lūdzu aizpildiet paroles lauku';
         }
         
         if (!array_filter($errors)) {
             $logUser = User::login($email, hash('ripemd160', $password));
             if ($logUser == NULL) {
-                $errors["login"] = "Incorrect email or password! Please try again!";
+                $errors["login"] = "Nepareizi ievadits e-pasts vai parole. Ludzam pameģinat velreiz!";
             } else {
                 $_SESSION["logged"] = $logUser;
-                header("Location: index");
+                header("Location: .");
             }
             
         }
@@ -42,11 +45,11 @@
         
         <div class="box column is-half">
         <form action="login.php" class="field" method="POST">
-            <h4 class="has-text-centered">USER LOGIN</h4>
+            <h4 class="has-text-centered">Lietotaja pieteikšana</h4>
             
-            <label class="label">E-Mail</label>
+            <label class="label">E-Pasts</label>
             <div class="control has-icons-left has-icons-right">
-                <input class="input" type="text" placeholder="Your Email" name="email" value="<?=$email?>">
+                <input class="input" type="text" placeholder="Jūsu e-pasts" name="email" value="<?=$email?>">
                 <span class="icon is-small is-left">
                     <i class="fas fa-envelope"></i>
                 </span>
@@ -56,9 +59,9 @@
             </div>
             <span class="help is-danger"><?=$errors["email"]?></span>
             
-            <label class="label">Password</label>
+            <label class="label">Parole</label>
             <div class="control has-icons-left has-icons-right">
-                <input class="input" type="password" placeholder="Password input" name="password">
+                <input class="input" type="password" placeholder="Jūsu parole" name="password">
                 <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>
                 </span>
@@ -72,7 +75,7 @@
             <span class="help is-danger"><?php ?></span>
             <br>
             <div class="is-centered buttons">
-                <input class="button " type="submit" name="submit" value="Login">
+                <input class="button " type="submit" name="submit" value="Pieteikties">
             </div>
 
 

@@ -4,6 +4,10 @@
     include("./classes/user.php");
     include("./classes/comment.php");    
     session_start();
+    
+    if ($_SESSION["logged"]->getRole() != "admin") {
+        header("Location: .");
+    }
 
     $db_con = new DB_connection();
     $adCount = $db_con->makeQuery("SELECT COUNT(*) as adCount FROM advertisements")[0]["adCount"];
@@ -12,7 +16,7 @@
     // echo $adCount." \n ".$pageCount;
     if (isset($_GET["page"])) {
         $curPage = $_GET["page"];
-        echo "setted: ".$curPage;
+        // echo "setted: ".$curPage;
     } else {
         $curPage = 1;
     }
@@ -25,28 +29,41 @@
         $tab = $_GET["tab"];
         if ($tab == "Users" || $tab == "Advertisements") {
             $selectedTab = $tab;
-            if ($tab == "Advertisements") {
-                $query_ad_result = $db_con->makeQuery("SELECT * FROM advertisements ORDER BY ID DESC LIMIT $queryItemCount,10;");
-                $ads = array();
-                foreach ($query_ad_result as $ad) {
-                    $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"], $ad["category"]);
-                    $buff->setViews($ad["views"]);
-                    array_push($ads, $buff);
-                }
-            }
-            if ($tab == "Users") {
-                $sql = "SELECT ID, username, email, role FROM users ORDER BY ID DESC LIMIT $queryItemCount,10";
-                $query_user_result = $db_con->makeQuery($sql);
-                $users = array();
-                foreach ($query_user_result as $user) {
-                    $buff = new User($user["username"], $user["email"], $user["ID"]);
-                    array_push($users, $buff);
-                }
-            }
         } else {
-            $selectedTab = "Users";
+            $tab = "Users";
+        }
+    } else {
+        $tab = "Users";
+    }
+
+    if (isset($_GET["banUser"])) {
+        $id = $_GET["banUser"];
+        User::blockUser($id);
+        $banUser = $_GET["banUser"];
+        header("Location: adminpanel?page=".$curPage."&tab=".$tab);
+    }
+
+    if ($tab == "Advertisements") {
+        $query_ad_result = $db_con->makeQuery("SELECT * FROM advertisements ORDER BY ID DESC LIMIT $queryItemCount,10;");
+        $ads = array();
+        foreach ($query_ad_result as $ad) {
+            $buff = new Advertisement($ad["ID"], $ad["title"], $ad["user"], $ad["createdAt"], $ad["logo"], $ad["category"]);
+            $buff->setViews($ad["views"]);
+            array_push($ads, $buff);
         }
     }
+    if ($tab == "Users") {
+        $sql = "SELECT ID, username, email, blocked, role FROM users ORDER BY ID DESC LIMIT $queryItemCount,10";
+        $query_user_result = $db_con->makeQuery($sql);
+        $users = array();
+        foreach ($query_user_result as $user) {
+            $buff = new User($user["username"], $user["email"], $user["ID"]);
+            $buff->setBlocked($user["blocked"]);
+            array_push($users, $buff);
+        }
+    }
+
+    
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +72,34 @@
 
 <body>
     <?php include("./components/style_comp/header.php"); ?>
-
+    <div id="banAdConfirm" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="container box">
+                <div class="has-text-centered">Are you sure you want to ban this advertisement?</div>
+                <br>
+                <div class="buttons is-centered">
+                    <div id="applyAd" class="button is-success" onclick="banAdTrue()">OK</div>
+                    <div class="button is-danger" onclick="banAdFalse()">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="banAdFalse()"></button>
+    </div>
+    <div id="banUserConfirm" class="modal">
+        <div class="modal-background"></div>
+        <div class="modal-content">
+            <div class="container box">
+                <div class="has-text-centered">Are you sure you want to ban this user?</div>
+                <br>
+                <div class="buttons is-centered">
+                    <div id="applyUser" class="button is-success" onclick="banUserTrue()">OK</div>
+                    <div class="button is-danger" onclick="banUserFalse()">CANCEL</div>
+                </div>
+            </div>
+        </div>
+        <button class="modal-close is-large" aria-label="close" onclick="banUserFalse()"></button>
+    </div>
     <div class="columns is-centered is-multiline">
         <div class="column is-four-fifths box">
             <div class="tabs is-centered">
@@ -87,18 +131,18 @@
                         </div>
                             <div class="container is-fluid">
                             <span class=" is-clipped adv-foot-username">  
-                                <span class="has-text-weight-medium"> Created by </span> <?php $ad->getUser(); ?>
+                                <span class="has-text-weight-medium"> Izveidoja:  </span> <?php $ad->getUser(); ?>
                             </span>
                             <span class="is-pulled-right">
-                                <span class="has-text-weight-medium"> Date: </span> <?php $ad->getCreatedAt();  ?>
+                                <span class="has-text-weight-medium"> Datums: </span> <?php $ad->getCreatedAt();  ?>
                             </span>
                             
                             <div class="buttons container ">
-                                <a class="button box" onclick="banConfirm(<?=$key?>)" >
+                                <a class="button box" onclick="banAdConfirm(<?=$key?>)" >
                                     <i class="fas fa-ban"></i>
                                 </a>
                                 <a class="button box" onclick="openProfile(<?=$key?>)" >
-                                    <i class="fas fa-user"></i>
+                                    <i class="fas fa-trash"></i>
                                 </a>
                             </div>
                             </div>
@@ -122,12 +166,15 @@
                                 <p>
                                     E-mail: <span class="is-pulled-right"><?php $user->getEmail(); ?></span>
                                 </p>
+                                <p>
+                                    Blocked: <span class="is-pulled-right"><?=$user->getBlocked() ? "Yes" : "No"?></span>
+                                </p>
                             </div>
                             <div class="buttons">
-                                <a class="button has-text-info box" onclick="banConfirm(<?=$key?>)" >
+                                <a class="button has-text-info box" onclick="banUserConfirm(<?=$user->getID().','.$curPage.',\''.$tab.'\''?>)" >
                                     <i class="fas fa-ban"></i>
                                 </a>
-                                <a class="button has-text-info box" onclick="openProfile(<?=$key?>)" >
+                                <a class="button has-text-info box" onclick="openProfile(<?=$user->getID()?>)" >
                                     <i class="fas fa-user"></i>
                                 </a>
                             </div>
